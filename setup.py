@@ -12,7 +12,7 @@ license = 'MIT License'
 keywords = []
 
 dependencies = []
-develop_dependencies = ['pytest', 'tox']
+develop_dependencies = ['pytest', 'tox', 'fake-open']
 supported = [(2, 7), (3, 3), (3, 4)]
 classifiers = [
     'Development Status :: 3 - Alpha',
@@ -73,9 +73,6 @@ setup(
     packages=[package],
     install_requires=dependencies,
     tests_require=develop_dependencies,
-    entry_points={
-        'console_scripts': ['{0} = {0}.cli:main'.format(package)]
-    },
     classifiers=classifiers,
     keywords=' '.join(keywords)
 )

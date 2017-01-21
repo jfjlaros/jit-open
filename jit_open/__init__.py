@@ -7,7 +7,7 @@ Copyright (c) 2017 Jeroen F.J. Laros <J.F.J.Laros@lumc.nl>
 
 Licensed under the MIT license, see the LICENSE file.
 """
-#from .jit_open import 
+from .jit_open import JITOpen
 
 
 __version_info__ = ('0', '0', '1')
