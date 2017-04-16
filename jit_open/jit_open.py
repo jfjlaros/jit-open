@@ -1,69 +1,71 @@
 """Just-in-time open.
 
-This library can be used when a large amount of files need to be opened, of
-which a small amount is written to regularly.
+This library can be used when a large amount of files need to be opened.
 
-To deal with resource limits, and to keep the most frequently used files open,
-the following techniques are used:
-- Instead of opening a file immediately, open it on the first write.
-- Keep the open files in a queue, if the queue is full, close the least used
-  file.
+To deal with resource limits, the following techniques are used:
+- Data is written to a buffer.
+- The file is opened for appending when the buffer is full, the data is then
+  written to the file.
+- All Handle objects share a Queue. If the total amount of used memory (all
+  buffers) exceeds a given maximum, a flushing strategy is executed.
 
 Note that empty files will not be created.
 """
-import heapq
-import resource
+class Queue(object):
+    def __init__(self, max_size=1073741824):
+        """Queue for Handle objects.
 
-
-class Queue(list):
-    def __init__(self, max_size=0, *args, **kwargs):
-        """Make list with an additional `max_size` attribute.
-        
-        If no size is given, use a value based on the soft NOFILE resource
-        limit.
+        :arg int max_size: Maximum size of the memory buffer.
         """
         self.max_size = max_size
+        self.size = 0
 
-        super(Queue, self).__init__(*args, **kwargs)
-        if not self.max_size:
-            self.max_size = resource.getrlimit(resource.RLIMIT_NOFILE)[0] - 100
+        self._queue = []
+
+    def append(self, item):
+        self._queue.append(item)
+
+    def flush(self):
+        for item in self._queue:
+            item.flush()
 
 
 class Handle(object):
-    def __init__(self, name, queue):
+    def __init__(self, name, queue, max_size=1048576):
         """Set up a just-in-time file open handle like object.
 
         :arg str name: Name of the file.
         :arg Queue queue: Queue for open files.
+        :arg int max_size: Maximum size of the memory buffer.
         """
-        self._name = name
+        self.name = name
         self._queue = queue
+        self._max_size = max_size
 
-        self._count = 0
-        self._handle = None
-        self.write = self._append
+        self._buffer = ''
+        self._queue.append(self)
 
-    def __lt__(self, y):
-        return self._count < y._count
+    def __del__(self):
+        self.flush()
 
-    def _write(self, *args, **kwargs):
-        self._handle.write(*args, **kwargs)
-        self._count += 1
+    def flush(self):
+        if self._buffer:
+            handle = open(self.name, 'a+')
+            handle.write(self._buffer)
+            handle.close()
 
-    def _append(self, *args, **kwargs):
-        """Open a file for appending.
+            self._queue.size -= len(self._buffer)
+            self._buffer = ''
 
-        If too many files are open, first close the one that is least used.
-        """
-        if len(self._queue) > self._queue.max_size:
-            heapq.heapify(self._queue) # Not as efficient as could be.
-            heapq.heappop(self._queue).suspend()
-        heapq.heappush(self._queue, self)
+    def close(self):
+        self.flush()
 
-        self._handle = open(self._name, 'a+')
-        self.write = self._write
-        self.write(*args, **kwargs)
+    def write(self, data):
+        if len(self._buffer) > self._max_size:
+            if self._queue.size > self._queue.max_size:
+                self._queue.flush()
+            else:
+                self.flush()
 
-    def suspend(self):
-        self._handle.close()
-        self.write = self._append
+        self._buffer += data
+        self._queue.size += len(data)
