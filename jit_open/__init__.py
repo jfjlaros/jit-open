@@ -1,5 +1,4 @@
-"""
-jit-open: Just in time open files..
+"""jit-open: Just in time open files.
 
 
 Copyright (c) 2017 Leiden University Medical Center <humgen@lumc.nl>
@@ -7,10 +6,10 @@ Copyright (c) 2017 Jeroen F.J. Laros <J.F.J.Laros@lumc.nl>
 
 Licensed under the MIT license, see the LICENSE file.
 """
-from .jit_open import JITOpen
+from .jit_open import Handle, Queue
 
 
-__version_info__ = ('0', '0', '2')
+__version_info__ = ('0', '0', '3')
 
 __version__ = '.'.join(__version_info__)
 __author__ = 'LUMC, Jeroen F.J. Laros'

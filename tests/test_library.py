@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 from fake_open import FakeOpen
 
-from jit_open import jit_open, JITOpen
+from jit_open import jit_open, Handle, Queue
 
 
 class TestLibrary(object):
@@ -14,17 +14,21 @@ class TestLibrary(object):
         self._handles = opener.handles
         jit_open.open = opener.open
 
+        self._queue = Queue()
+
     def test_unused(self):
-        handle = JITOpen('test.txt', 'w')
+        handle = Handle('test.txt', self._queue)
         assert 'test.txt' not in self._handles
 
     def test_used_1(self):
-        handle = JITOpen('test.txt', 'w')
+        handle = Handle('test.txt', self._queue)
         handle.write('line 1\n')
+        handle.close()
         assert self._handles['test.txt'].getvalue() == 'line 1\n'
 
     def test_used_2(self):
-        handle = JITOpen('test.txt', 'w')
+        handle = Handle('test.txt', self._queue)
         handle.write('line 1\n')
         handle.write('line 2\n')
+        handle.close()
         assert self._handles['test.txt'].getvalue() == 'line 1\nline 2\n'
