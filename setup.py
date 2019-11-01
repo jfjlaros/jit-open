@@ -13,7 +13,7 @@ keywords = []
 
 dependencies = []
 develop_dependencies = ['pytest', 'tox', 'fake-open']
-supported = [(2, 7), (3, 3), (3, 4)]
+supported = [(2, 7), (3, 3), (3, 4), (3, 7)]
 classifiers = [
     'Development Status :: 3 - Alpha',
     'Intended Audience :: Science/Research',
