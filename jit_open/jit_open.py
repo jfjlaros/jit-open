@@ -49,7 +49,7 @@ class Handle(object):
         self._buffer = ''
         self._queue.append(self)
 
-    def __del__(self):
+    def __exit__(self):
         self.flush()
 
     def flush(self):

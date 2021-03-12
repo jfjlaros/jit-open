@@ -1,11 +1,3 @@
-"""jit-open: Just in time open files.
-
-
-Copyright (c) 2020 Leiden University Medical Center <humgen@lumc.nl>
-Copyright (c) 2020 Jeroen F.J. Laros <J.F.J.Laros@lumc.nl>
-
-Licensed under the MIT license, see the LICENSE file.
-"""
 from pkg_resources import get_distribution
 
 from .jit_open import Handle, Queue
@@ -19,7 +11,6 @@ def _get_metadata(name):
             return line.split(': ')[1]
 
     return ''
-
 
 _copyright_notice = 'Copyright (c) {} <{}>'.format(
     _get_metadata('Author'), _get_metadata('Author-email'))
