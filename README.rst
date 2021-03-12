@@ -55,4 +55,3 @@ The library provides the ``Handle`` and ``Queue`` classes.
 
 .. _PyPI: https://pypi.python.org/pypi/jit-open
 .. _GitHub: https://github.com/jfjlaros/jit-open.git
-~

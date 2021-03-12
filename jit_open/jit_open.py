@@ -54,7 +54,7 @@ class Handle(object):
 
     def flush(self):
         if self._buffer:
-            handle = self._open(self.name, 'a+' + self._mode)
+            handle = self._open(self.name, 'a' + self._mode)
             handle.write(self._buffer)
             handle.close()
 
