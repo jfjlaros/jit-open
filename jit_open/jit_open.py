@@ -12,9 +12,9 @@ To deal with resource limits, the following techniques are used:
 Note that empty files will not be created.
 """
 class Queue(object):
+    """Queue for Handle objects."""
     def __init__(self, max_size=1073741824):
-        """Queue for Handle objects.
-
+        """
         :arg int max_size: Maximum size of the memory buffer.
         """
         self.max_size = max_size
@@ -31,16 +31,20 @@ class Queue(object):
 
 
 class Handle(object):
-    def __init__(self, name, queue, max_size=1048576):
-        """Set up a just-in-time file open handle like object.
-
+    """Set up a just-in-time file open handle like object."""
+    def __init__(self, name, queue, max_size=1048576, f_open=open, mode='t'):
+        """
         :arg str name: Name of the file.
         :arg Queue queue: Queue for open files.
         :arg int max_size: Maximum size of the memory buffer.
+        :arg function opener: File open function.
+        :arg str mode: File mode ('t' for text, 'b' for binary).
         """
         self.name = name
         self._queue = queue
         self._max_size = max_size
+        self._open = f_open
+        self._mode = mode
 
         self._buffer = ''
         self._queue.append(self)
@@ -50,7 +54,7 @@ class Handle(object):
 
     def flush(self):
         if self._buffer:
-            handle = open(self.name, 'a+')
+            handle = self._open(self.name, 'a+' + self._mode)
             handle.write(self._buffer)
             handle.close()
 
