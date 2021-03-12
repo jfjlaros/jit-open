@@ -1,3 +1,0 @@
-fake-open
-pytest
-tox

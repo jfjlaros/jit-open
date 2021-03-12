@@ -1,22 +1,30 @@
 """jit-open: Just in time open files.
 
 
-Copyright (c) 2017 Leiden University Medical Center <humgen@lumc.nl>
-Copyright (c) 2017 Jeroen F.J. Laros <J.F.J.Laros@lumc.nl>
+Copyright (c) 2020 Leiden University Medical Center <humgen@lumc.nl>
+Copyright (c) 2020 Jeroen F.J. Laros <J.F.J.Laros@lumc.nl>
 
 Licensed under the MIT license, see the LICENSE file.
 """
+from pkg_resources import get_distribution
+
 from .jit_open import Handle, Queue
 
 
-__version_info__ = ('0', '0', '3')
+def _get_metadata(name):
+    pkg = get_distribution(__package__)
 
-__version__ = '.'.join(__version_info__)
-__author__ = 'LUMC, Jeroen F.J. Laros'
-__contact__ = 'J.F.J.Laros@lumc.nl'
-__homepage__ = 'https://git.lumc.nl/j.f.j.laros/jit-open'
+    for line in pkg.get_metadata_lines(pkg.PKG_INFO):
+        if line.startswith('{}: '.format(name)):
+            return line.split(': ')[1]
 
-usage = __doc__.split('\n\n\n')
+    return ''
+
+
+_copyright_notice = 'Copyright (c) {} <{}>'.format(
+    _get_metadata('Author'), _get_metadata('Author-email'))
+
+usage = [_get_metadata('Summary'), _copyright_notice]
 
 
 def doc_split(func):
@@ -24,5 +32,6 @@ def doc_split(func):
 
 
 def version(name):
-    return '{} version {}\n\nAuthor   : {} <{}>\nHomepage : {}'.format(
-        name, __version__, __author__, __contact__, __homepage__)
+    return '{} version {}\n\n{}\nHomepage: {}'.format(
+        _get_metadata('Name'), _get_metadata('Version'), _copyright_notice,
+        _get_metadata('Home-page'))
