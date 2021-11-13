@@ -4,7 +4,7 @@ from .jit_open import Handle, Queue
 
 
 def _get_metadata(name):
-    pkg = get_distribution(__package__)
+    pkg = get_distribution('jit_open')
 
     for line in pkg.get_metadata_lines(pkg.PKG_INFO):
         if line.startswith('{}: '.format(name)):
