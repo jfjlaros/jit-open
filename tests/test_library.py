@@ -5,7 +5,7 @@ from jit_open import jit_open, Handle, Queue
 
 
 class TestLibrary(object):
-    def setup(self):
+    def setup_method(self):
         fake_open = FakeOpen()
         self._handles = fake_open.handles
         self._open = fake_open.open

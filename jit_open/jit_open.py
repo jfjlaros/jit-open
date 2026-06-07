@@ -11,6 +11,9 @@ To deal with resource limits, the following techniques are used:
 
 Note that empty files will not be created.
 """
+from pathlib import Path
+
+
 class Queue(object):
     """Queue for Handle objects."""
     def __init__(self, max_size=1073741824):
@@ -48,6 +51,8 @@ class Handle(object):
 
         self._buffer = ''
         self._queue.append(self)
+
+        Path.unlink(self.name, missing_ok=True)
 
     def __exit__(self):
         self.flush()
