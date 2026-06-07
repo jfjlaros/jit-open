@@ -6,9 +6,9 @@ build-backend = 'hatchling.build'
 packages = ["."]
 
 [project]
-name = 'JitOpen'
+name = 'Jit-Open'
 description = 'Just in time open files.'
-version = '1.0.2'
+version = '1.0.3'
 
 authors = [{name = 'Jeroen F.J. Laros', email = 'jlaros@fixedpoint.nl'}]
 urls = {homepage = 'https://github.com/jfjlaros/jit-open'}
